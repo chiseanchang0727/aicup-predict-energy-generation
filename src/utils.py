@@ -15,3 +15,8 @@ def load_dataframes(folder_path) -> pd.DataFrame:
             dataframes = pd.concat([dataframes, df], axis=0)
 
     return dataframes
+
+
+
+def choose_device(df, device):
+    return df[df['device'] == device]
