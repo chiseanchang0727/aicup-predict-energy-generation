@@ -78,3 +78,14 @@ def create_sinusoidal_transformation_year_month_day(df, col_name, year, month, d
     df[f'{col_name}_sin'] = np.sin(2 * np.pi * df[year] * df[month] * df[day] / period)
     df[f'{col_name}_cos'] = np.cos(2 * np.pi * df[year] * df[month] * df[day] / period)
     return df
+
+
+
+# create lagged features
+def create_power_lag_feature(df, target_col):
+
+    df[target_col + 'lag_1'] = df[target_col].shift(1)
+    df[target_col + 'lag_2'] = df[target_col].shift(2)
+    df[target_col + 'lag_3'] = df[target_col].shift(3)
+    
+    return
