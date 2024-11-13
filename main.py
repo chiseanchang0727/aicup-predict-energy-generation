@@ -126,4 +126,4 @@ tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap
 
 df = df_fe_result_sinusoidal_time
 scores = generate_scores_by_xgb(df, tss)
-np.mean(scores)
+print(f"Total absolute error {np.mean(scores)}")
