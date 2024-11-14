@@ -12,7 +12,7 @@ from src.feature_engineering import feature_engineering
 
 ######################################################################
 
-config_file = './Sean/test_4_L10.json'
+config_file = './Sean/test_5_L10_pe.json'
 configs = read_config(os.path.join('./test_configs/', config_file))
 
 device_name = configs['device_name']

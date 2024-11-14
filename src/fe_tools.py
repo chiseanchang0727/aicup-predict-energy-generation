@@ -30,8 +30,8 @@ def create_time_features(df, input_column) -> pd.DataFrame:
     df_copy['min'] = df_copy[input_column].dt.minute
 
     # Seasonal features
-    df_copy['day_of_week'] = df_copy[input_column].dt.dayofweek  # Monday=0, Sunday=6
-    df_copy['week_of_year'] = df_copy[input_column].dt.isocalendar().week  # Week of the year
+    df_copy['day_of_week'] = df_copy[input_column].dt.dayofweek 
+    df_copy['week_of_year'] = df_copy[input_column].dt.isocalendar().week 
     df_copy['quarter'] = df_copy[input_column].dt.quarter 
     
     # df_copy['season'] = df_copy['month'].apply(lambda x: 
@@ -43,7 +43,7 @@ def create_time_features(df, input_column) -> pd.DataFrame:
     return df_copy
 
 
-def create_sinusoidal_transformation_by_number(df, col_name, period):
+def create_sinusoidal_transformation_by_month(df, month, period):
     """
     Adds sinusoidal transformation columns (sin and cos) for a given column.
     
@@ -55,13 +55,13 @@ def create_sinusoidal_transformation_by_number(df, col_name, period):
     Returns:
     - DataFrame with added columns for sinusoidal transformations.
     """
-    df[f'{col_name}_sin'] = np.sin(2 * np.pi * df[col_name] / period)
-    df[f'{col_name}_cos'] = np.cos(2 * np.pi * df[col_name] / period)
+    df[f'date_pe_sin'] = np.sin(2 * np.pi * df[month] / period)
+    df[f'date_pe_cos'] = np.cos(2 * np.pi * df[month] / period)
     return df
 
 
 
-def create_sinusoidal_transformation_year_month_day(df, col_name, year, month, day, period):
+def create_sinusoidal_transformation_year_month_day(df, year, month, day, period):
     """
     Adds sinusoidal transformation columns (sin and cos) for year, month, day.
     
@@ -75,10 +75,36 @@ def create_sinusoidal_transformation_year_month_day(df, col_name, year, month, d
     Returns:
     - DataFrame with added columns for sinusoidal transformations.
     """
-    df[f'{col_name}_sin'] = np.sin(2 * np.pi * df[year] * df[month] * df[day] / period)
-    df[f'{col_name}_cos'] = np.cos(2 * np.pi * df[year] * df[month] * df[day] / period)
+    df[f'date_pe_sin'] = np.sin(2 * np.pi * df[year] * df[month] * df[day] / period)
+    df[f'date_pe_sin'] = np.cos(2 * np.pi * df[year] * df[month] * df[day] / period)
     return df
 
+
+
+def create_pe(df, d, n):
+    """
+    Adds sinusoidal transformation columns (sin and cos) for year, month, day.
+    
+    Parameters:
+    - df: DataFrame to add the transformations to.
+    - year: the column stands for year..
+    - month: the column stands for month.
+    - day: the column stands for day.
+    - period: The period of the cycle (e.g., 12 for months, 7 for days of the week).
+    
+    Returns:
+    - DataFrame with added columns for sinusoidal transformations.
+    """
+    length  = len(df)
+
+    for k in range(length):
+        for i in np.arange(int(d/2)):
+            denominator = np.power(n, 2*i/d)
+            # angle = 2 * np.pi * df[month] * df[day] / period
+            df.loc[k, f'date_pe_{i}_sin'] = np.sin(k/denominator)
+            df.loc[k, f'date_pe_{i}_cos'] = np.cos(k/denominator)
+            
+    return df
 
 
 # create lagged features
