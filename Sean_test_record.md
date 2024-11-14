@@ -11,8 +11,9 @@
 
 - device: L10
 - config: test_3_L10.json
+- cross validation days: 2
 - Total absolute error: 275307.21
-
+- Note that if cross validation days = 5 the total AE is around 500000
 
 3. with positional encoding
 
