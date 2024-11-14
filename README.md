@@ -19,3 +19,10 @@
 - remove windspeed
 
 - Total absolute error -202681.06
+
+3. Test 3: L10 baseline
+
+- device:L10
+- remove: windspeed
+
+- Total absolute error: 224001.19

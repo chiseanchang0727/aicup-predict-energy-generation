@@ -1,18 +1,20 @@
 import xgboost as xgb
 
 xgb_params = {
-    "base_score": 0.5,
+    "base_score": 0.1,
     "booster": "gbtree",
-    "n_estimators": 100,
-    "early_stopping_rounds": 50,
-    "max_depth": 3,
+    "n_estimators": 1000,
+    "early_stopping_rounds": 100,
+    "max_depth": 10,
     "learning_rate": 1e-2,
 }
+
 
 def initialize_xgb_model(**kwargs):
     return xgb.XGBRegressor(**kwargs)
 
 def generate_scores_by_xgb(df, tss, TARGET="power", drop_cols=["power", "device", "date"], xgb_params=xgb_params):
+    print('Training starts.')
     preds = []
     scores = []
     for train_idx, val_idx in tss.split(df):
@@ -23,12 +25,12 @@ def generate_scores_by_xgb(df, tss, TARGET="power", drop_cols=["power", "device"
 
         reg = initialize_xgb_model(**xgb_params)
         reg.fit(
-            X_train, y_train, eval_set=[(X_train, y_train), (X_valid, y_valid)], verbose=20
+            X_train, y_train, eval_set=[(X_train, y_train), (X_valid, y_valid)], verbose=False
         )
 
         y_pred = reg.predict(X_valid)
         preds.append(y_pred)
-        score = sum(y_pred - y_valid)
+        score = sum(abs(y_pred - y_valid))
         scores.append(score)
     
     return scores

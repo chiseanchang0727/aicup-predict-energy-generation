@@ -15,7 +15,7 @@ sys.path.append(project_root_path)
 from src.utils import read_config, choose_device
 from src.train import generate_scores_by_xgb
 from src.preprocess import preprocess
-from src.feature_engineering import (
+from src.fe_tools import (
     calculate_pressure_diff,
     create_sinusoidal_transformation_by_number,
     create_sinusoidal_transformation_year_month_day,
@@ -26,7 +26,7 @@ from src.feature_engineering import (
 
 ######################################################################
 
-config_file = 'test_2.json'
+config_file = 'test_3_L10.json'
 configs = read_config(os.path.join('./test_configs/', config_file))
 
 device_name = configs['device_name']
