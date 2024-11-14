@@ -21,7 +21,7 @@ from src.feature_engineering import feature_engineering
 
 ######################################################################
 
-config_file = 'test_4_L10.json'
+config_file = './Sean/test_4_L10.json'
 configs = read_config(os.path.join('./test_configs/', config_file))
 
 device_name = configs['device_name']
@@ -82,12 +82,12 @@ df_fe_result = feature_engineering(df=df_preprocessing, pe_config=pe_config)
 
 ## Train/Test split
 day_gap = 24 * 60
-invalid_cols = ["device"]
+invalid_cols_for_training = ["device"]
 target = "power"
 n_splits = 5
 
 ## Train Using Cross Validation
 tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap)
 
-valid_scores = train_and_valid(df_fe_result, tss, target, invalid_cols)
+valid_scores = train_and_valid(df_fe_result, tss, target, invalid_cols_for_training)
 print(f"Total absolute error: {np.mean(valid_scores):.2f}")
