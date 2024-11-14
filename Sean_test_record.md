@@ -20,4 +20,11 @@
 - device: L10
 - config: test_4_L10.json
 - cross validation days: 2
-Total absolute error: 223931.44
+- Total absolute error: 223931.44
+
+
+4. month encoding
+
+- config: test_5_L10_pe.json
+- cross validation days: 2
+- Total absolute error: 218893.33

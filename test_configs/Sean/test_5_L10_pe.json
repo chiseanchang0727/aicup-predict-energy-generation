@@ -1,6 +1,6 @@
 {
     "device_name": "L10",
-    "cols_for_drop": ["windspeed"],
+    "cols_for_drop": ["windspeed", "pressure"],
     "pe_config": {
         "flag": true,
         "period": "month"

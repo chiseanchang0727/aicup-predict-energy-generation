@@ -13,11 +13,11 @@ def create_sinusoidal_date_base(period):
 
     # create sinusodial month mapping
     if period == 'date':
-        df_base = pd.date_range(start="2023-01-01", end="2023-12-31")
+        df_base = pd.date_range(start='2023-01-01', end='2023-12-31')
         
     elif period == 'month':
         month_numbers = list(range(1, 13))
-        df_base = pd.DataFrame(month_numbers, columns=["month"])
+        df_base = pd.DataFrame(month_numbers, columns=['month'])
         
     # lunar_dates_params = {
     #     "start_date": "2023-02-04", 
@@ -25,8 +25,8 @@ def create_sinusoidal_date_base(period):
     #     "col_name": "lunar_ymd"
     # }
     
-    df_pe = create_sinusoidal_transformation_by_month(df_base, 'month', 12)
-    df_pe = create_pe(df_base, d=4, n=1e3)
+    df_pe = create_sinusoidal_transformation_by_month(df_base, 12)
+    # df_pe = create_pe(df_base, d=4, n=1e3)
     return df_pe
 
 def positional_encoding(df, period):

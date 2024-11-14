@@ -43,7 +43,7 @@ def create_time_features(df, input_column) -> pd.DataFrame:
     return df_copy
 
 
-def create_sinusoidal_transformation_by_month(df, month, period):
+def create_sinusoidal_transformation_by_month(df, period):
     """
     Adds sinusoidal transformation columns (sin and cos) for a given column.
     
@@ -55,8 +55,8 @@ def create_sinusoidal_transformation_by_month(df, month, period):
     Returns:
     - DataFrame with added columns for sinusoidal transformations.
     """
-    df[f'date_pe_sin'] = np.sin(2 * np.pi * df[month] / period)
-    df[f'date_pe_cos'] = np.cos(2 * np.pi * df[month] / period)
+    df[f'month_sin'] = np.sin(2 * np.pi * df['month'] / period)
+    df[f'month_cos'] = np.cos(2 * np.pi * df['month'] / period)
     return df
 
 
