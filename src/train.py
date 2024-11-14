@@ -13,7 +13,7 @@ xgb_params = {
 def initialize_xgb_model(**kwargs):
     return xgb.XGBRegressor(**kwargs)
 
-def generate_scores_by_xgb(df, tss, TARGET="power", drop_cols=["power", "device", "date"], xgb_params=xgb_params):
+def generate_scores_by_xgb(df, tss, TARGET="power", drop_cols=["power", "device"], xgb_params=xgb_params):
     print('Training starts.')
     preds = []
     scores = []

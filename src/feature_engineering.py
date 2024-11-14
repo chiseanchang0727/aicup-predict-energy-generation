@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-from fe_tools import (
+from src.fe_tools import (
     calculate_pressure_diff,
     create_sinusoidal_transformation_by_number,
     create_sinusoidal_transformation_year_month_day,
@@ -21,12 +21,7 @@ def generate_sinusoidal_date_features(start_date, end_date, col_name):
 
     return create_sinusoidal_transformation_year_month_day(df_dates, col_name, "year", "month", "day", 12)
 
-
-## Feature engineering
-
-
-def feature_engineering(df):
-    df_fe_result = calculate_pressure_diff(df, column="pressure")
+def create_sinusoidal_date_base():
 
     # create sinusodial month mapping
     month_numbers = list(range(1, 13))
@@ -47,13 +42,30 @@ def feature_engineering(df):
     df_general_dates = generate_sinusoidal_date_features(**general_dates_params)
     df_lunar_dates = generate_sinusoidal_date_features(**lunar_dates_params)
 
-    # Aligns with a specific lunar calendar period
-    df_fe_result = create_time_features(df_fe_result, "datetime")
-    df_fe_result_sinusoidal_time = pd.merge(
-        df_fe_result, df_general_dates, how="left", on=["year", "month", "day"]
-    )
 
+    return df_general_dates, df_lunar_dates
 
+def feature_engineering(df, add_sinusoidal_time_base=False):
+    # df = calculate_pressure_diff(df, column="pressure")
+
+    
+    if add_sinusoidal_time_base == 'general':
+        df_general_dates, _ = create_sinusoidal_date_base()
+        df = create_time_features(df, "datetime")
+        df_fe_result = pd.merge(
+            df, df_general_dates, how="left", on=["year", "month", "day"]
+        )
+    elif add_sinusoidal_time_base == 'lunar':
+        _, df_lunar_dates = create_sinusoidal_date_base()
+         # Aligns with a specific lunar calendar period
+        df = create_time_features(df, "datetime")
+        df_fe_result = pd.merge(
+            df, df_lunar_dates, how="left", on=["year", "month", "day"]
+        )   
+
+    else:
+        # no feature engineering
+        df_fe_result = df
 
 
     return df_fe_result
