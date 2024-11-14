@@ -28,7 +28,7 @@ def generate_scores_by_xgb(df, tss, TARGET="power", drop_cols=["power", "device"
 
         y_pred = reg.predict(X_valid)
         preds.append(y_pred)
-        score = sum(y_pred - y_valid)
+        score = sum(abs(y_pred - y_valid))
         scores.append(score)
     
     return scores
