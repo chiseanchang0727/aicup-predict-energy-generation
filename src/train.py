@@ -14,7 +14,7 @@ def initialize_xgb_model(**kwargs):
     return xgb.XGBRegressor(**kwargs)
 
 def train_and_valid(df, tss, target, drop_cols, xgb_params=xgb_params):
-    
+
     print('Training starts.')
     preds = []
     valid_scores = []
