@@ -1,19 +1,12 @@
 import os
-import sys
-
 import numpy as np
 import pandas as pd
 
 from sklearn.model_selection import TimeSeriesSplit
 
-# Make `src` dir can be imported
-project_root_path = os.path.abspath(os.path.join(os.getcwd(), ".."))
-sys.path.append(project_root_path)
-
 from src.utils import read_config, choose_device
 from src.train import train_and_valid
 from src.preprocess import preprocess
-
 from src.feature_engineering import feature_engineering
 
 
@@ -25,6 +18,14 @@ configs = read_config(os.path.join('./test_configs/', config_file))
 device_name = configs['device_name']
 cols_for_drop = configs['cols_for_drop']
 pe_config = configs['pe_config']
+
+
+######### test these later
+
+day_gap = 24 * 60
+invalid_cols_for_training = ["device"]
+target = "power"
+n_splits = 5
 
 ######################################################################
 
@@ -52,12 +53,6 @@ df_preprocessing = preprocess(df_device, cols_for_drop)
 # feature engineering
 df_fe_result = feature_engineering(df=df_preprocessing, pe_config=pe_config)
 
-
-## Train/Test split
-day_gap = 24 * 60
-invalid_cols_for_training = ["device"]
-target = "power"
-n_splits = 5
 
 ## Train Using Cross Validation
 tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap)
