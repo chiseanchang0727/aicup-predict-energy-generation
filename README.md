@@ -4,7 +4,7 @@
 
 ## Test record
 
-1. Baseline test
+1. test1
 
 - device: L8
 - no preprocessing
@@ -26,3 +26,8 @@
 - remove: windspeed
 
 - Total absolute error: 224001.19
+
+4. Baseline (without anyother features)
+
+- device: L10
+- Total absolute error: 520669.06

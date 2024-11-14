@@ -13,7 +13,7 @@ project_root_path = os.path.abspath(os.path.join(os.getcwd(), ".."))
 sys.path.append(project_root_path)
 
 from src.utils import read_config, choose_device
-from src.train import generate_scores_by_xgb
+from src.train import train_and_valid
 from src.preprocess import preprocess
 
 from src.feature_engineering import feature_engineering
@@ -26,7 +26,7 @@ configs = read_config(os.path.join('./test_configs/', config_file))
 
 device_name = configs['device_name']
 cols_for_drop = configs['cols_for_drop']
-
+pe_config = configs['pe_config']
 
 ######################################################################
 
@@ -73,24 +73,22 @@ df_raw_data = read_raw_data_and_sort(raw_data_path, sort_by_cols=["device", "dat
 # parameterize the device for testing conveniently
 df_device = choose_device(df_raw_data, device_name)
 
-
+# preprocssing
 df_preprocessing = preprocess(df_device, cols_for_drop)
 
 # feature engineering
-df_fe_result = feature_engineering(df=df_preprocessing)
-
+df_fe_result = feature_engineering(df=df_preprocessing, pe_config=pe_config)
 
 
 ## Train/Test split
 day_gap = 24 * 60
-drop_cols = ["power", "device", "date"]
-TARGET = "power"
+drop_cols = ["datetime", "power", "device"]
+target = "power"
 n_splits = 5
 
 ## Train Using Cross Validation
 tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(5), gap=day_gap)
-df_train, df_test = split_train_test(df=df_fe_result, plot=True)
 
-df = df_fe_result
-scores = generate_scores_by_xgb(df, tss)
-print(f"Total absolute error: {np.mean(scores):.2f}")
+training_niput = df_fe_result
+valid_scores = train_and_valid(training_niput, tss, target, drop_cols)
+print(f"Total absolute error: {np.mean(valid_scores):.2f}")

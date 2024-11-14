@@ -45,17 +45,16 @@ def create_sinusoidal_date_base():
 
     return df_general_dates, df_lunar_dates
 
-def feature_engineering(df, add_sinusoidal_time_base=False):
-    # df = calculate_pressure_diff(df, column="pressure")
-
+def positional_encoding(df, method):
     
-    if add_sinusoidal_time_base == 'general':
+    df_fe_result = None
+    if method == 'general':
         df_general_dates, _ = create_sinusoidal_date_base()
         df = create_time_features(df, "datetime")
         df_fe_result = pd.merge(
             df, df_general_dates, how="left", on=["year", "month", "day"]
         )
-    elif add_sinusoidal_time_base == 'lunar':
+    elif method == 'lunar':
         _, df_lunar_dates = create_sinusoidal_date_base()
          # Aligns with a specific lunar calendar period
         df = create_time_features(df, "datetime")
@@ -64,7 +63,18 @@ def feature_engineering(df, add_sinusoidal_time_base=False):
         )   
 
     else:
-        # no feature engineering
+        raise ValueError('Non accepted positional encoding method.')
+    
+    return df_fe_result
+
+def feature_engineering(df, pe_config):
+    # df = calculate_pressure_diff(df, column="pressure")
+
+    pe_flag = pe_config['flag']
+    pe_method = pe_config['method']
+    if pe_flag:
+        df_fe_result = positional_encoding(df, method=pe_method)
+    else:
         df_fe_result = df
 
 

@@ -21,7 +21,7 @@ def load_dataframes(folder_path) -> pd.DataFrame:
 def choose_device(df, device):
     df_copy = df[df['device'] == device].copy()
     df_copy = df_copy.drop('locationcode', axis=1)
-    df_copy = df_copy.set_index('datetime')
+    # df_copy = df_copy.set_index('datetime')
     return df_copy
 
 

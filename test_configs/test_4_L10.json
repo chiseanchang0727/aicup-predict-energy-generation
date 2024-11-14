@@ -1,0 +1,9 @@
+{
+    "device_name": "L10",
+    "cols_for_drop": ["windspeed"],
+    "pe_config": {
+        "flag": true,
+        "method": "general"
+    }
+  }
+  
