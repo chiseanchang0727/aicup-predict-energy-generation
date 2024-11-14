@@ -4,30 +4,23 @@
 
 ## Test record
 
-1. test1
-
-- device: L8
-- no preprocessing
-- no feature engineering
-- model: xgboost (no hyperparameter tuning)
-
-- Total absolute error: -202681.06
-
-2. Test 2
-
-- device: L8
-- remove windspeed
-
-- Total absolute error -202681.06
-
-3. Test 3: L10 baseline
+1. Test 3: L10 baseline
 
 - device:L10
 - remove: windspeed
 
 - Total absolute error: 224001.19
 
-4. Baseline (without anyother features)
+2. Baseline (without anyother features)
 
 - device: L10
-- Total absolute error: 520669.06
+- config: test_3_L10.json
+- Total absolute error: 275307.21
+
+
+3. with positional encoding
+
+- device: L10
+- config: test_4_L10.json
+- cross validation days: 2
+Total absolute error: 223931.44

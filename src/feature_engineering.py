@@ -77,5 +77,15 @@ def feature_engineering(df, pe_config):
     else:
         df_fe_result = df
 
-
+    df_fe_result = drop_date_columns(df_fe_result)
     return df_fe_result
+
+
+
+def drop_date_columns(df):
+
+    columns_to_drop = [col for col in df.columns if 'datetime' in col.lower() or 'date' in col.lower()]
+    
+    df = df.drop(columns=columns_to_drop)
+    
+    return df

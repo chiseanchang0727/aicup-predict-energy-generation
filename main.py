@@ -82,12 +82,12 @@ df_fe_result = feature_engineering(df=df_preprocessing, pe_config=pe_config)
 
 ## Train/Test split
 day_gap = 24 * 60
-drop_cols = ["datetime", "power", "device", "date"]
+invalid_cols = ["device"]
 target = "power"
 n_splits = 5
 
 ## Train Using Cross Validation
-tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(5), gap=day_gap)
+tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap)
 
-valid_scores = train_and_valid(df_fe_result, tss, target, drop_cols)
+valid_scores = train_and_valid(df_fe_result, tss, target, invalid_cols)
 print(f"Total absolute error: {np.mean(valid_scores):.2f}")

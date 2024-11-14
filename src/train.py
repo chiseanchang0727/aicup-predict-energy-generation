@@ -9,20 +9,27 @@ xgb_params = {
     "learning_rate": 1e-2,
 }
 
+def drop_invalid_columns(df, invalid_cols):
+
+    columns_to_drop = [col for col in df.columns if any(keyword.lower() in col.lower() for keyword in invalid_cols)]
+    
+    df = df.drop(columns=columns_to_drop)
+    
+    return df
 
 def initialize_xgb_model(**kwargs):
     return xgb.XGBRegressor(**kwargs)
 
-def train_and_valid(df, tss, target, drop_cols, xgb_params=xgb_params):
-
+def train_and_valid(df, tss, target, invalid_cols, xgb_params=xgb_params):
+    df = drop_invalid_columns(df, invalid_cols)
     print('Training starts.')
     preds = []
     valid_scores = []
     for train_idx, val_idx in tss.split(df):
         df_train, df_valid = df.iloc[train_idx], df.iloc[val_idx]
 
-        X_train, y_train = df_train.drop(drop_cols, axis=1), df_train[target]
-        X_valid, y_valid = df_valid.drop(drop_cols, axis=1), df_valid[target]
+        X_train, y_train = df_train.drop(target, axis=1), df_train[target]
+        X_valid, y_valid = df_valid.drop(target, axis=1), df_valid[target]
 
         reg = initialize_xgb_model(**xgb_params)
         reg.fit(
