@@ -4,10 +4,12 @@
 
 ## Test record
 
-1. Test 1
+1. Baseline test
 
 - no preprocessing
 - no feature engineering
 - model: xgboost (no hyperparameter tuning)
 
-score: -202681.06
+- score: -202681.06
+
+2. Test 2
