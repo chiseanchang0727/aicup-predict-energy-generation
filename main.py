@@ -8,12 +8,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import TimeSeriesSplit
 
-
 # Make `src` dir can be imported
 project_root_path = os.path.abspath(os.path.join(os.getcwd(), ".."))
 sys.path.append(project_root_path)
 
-from src.utils import choose_device
+from src.utils import read_config, choose_device
 from src.train import generate_scores_by_xgb
 from src.preprocess import preprocess
 from src.feature_engineering import (
@@ -23,9 +22,23 @@ from src.feature_engineering import (
     create_time_features,
 )
 
+
+
+######################################################################
+
+config_file = 'test_2.json'
+configs = read_config(os.path.join('./test_configs/', config_file))
+
+device_name = configs['device_name']
+cols_for_drop = configs['cols_for_drop']
+
+
+######################################################################
+
+
 day_gap = 24 * 60
 raw_data_path = "data/processed_data/combined_data.csv"
-device_name = "L8"
+
 
 def read_raw_data_and_sort(raw_data_path: str, sort_by_cols: list = ["device", "datetime"]) -> pd.DataFrame:
     df_raw_data = pd.read_csv(raw_data_path, parse_dates=["datetime"])
@@ -76,8 +89,10 @@ df_raw_data = read_raw_data_and_sort(raw_data_path, sort_by_cols=["device", "dat
 # parameterize the device for testing conveniently
 df_device = choose_device(df_raw_data, device_name)
 
-columns_to_standardize = ["windspeed", "temperature", "humidity", "sunlight"]
-df_standardized = preprocess(df_device, columns_to_standardize)
+columns_to_standardize = ["temperature", "humidity", "sunlight"]
+
+cols_for_drop = ['windspeed']
+df_standardized = preprocess(df_device, columns_to_standardize, cols_for_drop)
 
 ## Feature engineering
 df_fe_result = calculate_pressure_diff(df_standardized, column="pressure")
@@ -126,4 +141,4 @@ tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap
 
 df = df_fe_result_sinusoidal_time
 scores = generate_scores_by_xgb(df, tss)
-print(f"Total absolute error {np.mean(scores):.2f}")
+print(f"Total absolute error: {np.mean(scores):.2f}")

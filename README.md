@@ -6,10 +6,16 @@
 
 1. Baseline test
 
+- device: L8
 - no preprocessing
 - no feature engineering
 - model: xgboost (no hyperparameter tuning)
 
-- score: -202681.06
+- Total absolute error: -202681.06
 
 2. Test 2
+
+- device: L8
+- remove windspeed
+
+- Total absolute error -202681.06

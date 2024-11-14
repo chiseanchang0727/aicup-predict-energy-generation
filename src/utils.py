@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-
+import json
 
 def load_dataframes(folder_path) -> pd.DataFrame:
     dataframes = pd.DataFrame()
@@ -20,3 +20,16 @@ def load_dataframes(folder_path) -> pd.DataFrame:
 
 def choose_device(df, device):
     return df[df['device'] == device]
+
+
+
+def read_config(path):
+    try:
+        with open(path, 'r') as file:
+            configs = json.load(file)
+
+        return configs
+    except FileNotFoundError:
+        print(f"The file {path} was not found.")
+    except json.JSONDecodeError:
+        print(f"Error decoding JSON from the file {path}.")
