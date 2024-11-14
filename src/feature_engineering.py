@@ -1,91 +1,91 @@
 import pandas as pd
-import numpy as np
 
-def calculate_pressure_diff(df, column='pressure'):
-    """
-    Adds a new column to the DataFrame with the difference of each value
-    in the specified column from the column's mean.
 
-    Parameters:
-    df (pd.DataFrame): The DataFrame containing the data.
-    column (str): The column for which to calculate the difference from the mean.
+from src.fe_tools import (
+    calculate_pressure_diff,
+    create_sinusoidal_transformation_by_number,
+    create_sinusoidal_transformation_year_month_day,
+    create_time_features,
+)
 
-    Returns:
-    pd.DataFrame: The DataFrame with an added column for pressure difference.
-    """
-    df_copy = df.copy()
-    mean_value = df_copy[column].mean()
-    df_copy.loc[:, f'{column}_diff'] = df_copy[column].apply(lambda x: round(x - mean_value, 2))
-    return df_copy
 
-# create time related features
-def create_time_features(df, input_column) -> pd.DataFrame:
-    df_copy = df.copy()
-    df_copy[input_column] = pd.to_datetime(df_copy[input_column])
-    df_copy['date'] = df_copy[input_column].dt.date
-    df_copy['year'] = df_copy[input_column].dt.year
-    df_copy['month'] = df_copy[input_column].dt.month
-    df_copy['day'] = df_copy[input_column].dt.day
-    df_copy['hour'] = df_copy[input_column].dt.hour
-    df_copy['min'] = df_copy[input_column].dt.minute
+def generate_sinusoidal_date_features(start_date, end_date, col_name):
+    dates = pd.date_range(start=start_date, end=end_date)
 
-    # Seasonal features
-    df_copy['day_of_week'] = df_copy[input_column].dt.dayofweek  # Monday=0, Sunday=6
-    df_copy['week_of_year'] = df_copy[input_column].dt.isocalendar().week  # Week of the year
-    df_copy['quarter'] = df_copy[input_column].dt.quarter 
+    # Create DataFrame and extract year, month, and day into separate columns
+    df_dates = pd.DataFrame({
+        "year": dates.year, 
+        "month": dates.month, 
+        "day": dates.day
+    })
+
+    return create_sinusoidal_transformation_year_month_day(df_dates, col_name, "year", "month", "day", 12)
+
+def create_sinusoidal_date_base():
+
+    # create sinusodial month mapping
+    month_numbers = list(range(1, 13))
+    df_months = pd.DataFrame(month_numbers, columns=["month"])
+    df_months = create_sinusoidal_transformation_by_number(df_months, "month", 12)
+
+    # Generate date range
+    general_dates_params = {
+        "start_date": "2023-01-01", 
+        "end_date": "2025-12-31",
+        "col_name": "general_ymd"
+    }
+    lunar_dates_params = {
+        "start_date": "2023-02-04", 
+        "end_date": "2025-02-03",
+        "col_name": "lunar_ymd"
+    }
+    df_general_dates = generate_sinusoidal_date_features(**general_dates_params)
+    df_lunar_dates = generate_sinusoidal_date_features(**lunar_dates_params)
+
+
+    return df_general_dates, df_lunar_dates
+
+def positional_encoding(df, method):
     
-    # df_copy['season'] = df_copy['month'].apply(lambda x: 
-    #                                            'winter' if x in [12, 1, 2] else
-    #                                            'spring' if x in [3, 4, 5] else
-    #                                            'summer' if x in [6, 7, 8] else
-    #                                            'fall')
+    df_fe_result = None
+    if method == 'general':
+        df_general_dates, _ = create_sinusoidal_date_base()
+        df = create_time_features(df, "datetime")
+        df_fe_result = pd.merge(
+            df, df_general_dates, how="left", on=["year", "month", "day"]
+        )
+    elif method == 'lunar':
+        _, df_lunar_dates = create_sinusoidal_date_base()
+         # Aligns with a specific lunar calendar period
+        df = create_time_features(df, "datetime")
+        df_fe_result = pd.merge(
+            df, df_lunar_dates, how="left", on=["year", "month", "day"]
+        )   
 
-    return df_copy
-
-
-def create_sinusoidal_transformation_by_number(df, col_name, period):
-    """
-    Adds sinusoidal transformation columns (sin and cos) for a given column.
+    else:
+        raise ValueError('Non accepted positional encoding method.')
     
-    Parameters:
-    - df: DataFrame to add the transformations to.
-    - col_name: The column on which to perform the transformations.
-    - period: The period of the cycle (e.g., 12 for months, 7 for days of the week).
+    return df_fe_result
+
+def feature_engineering(df, pe_config):
+    # df = calculate_pressure_diff(df, column="pressure")
+
+    pe_flag = pe_config['flag']
+    pe_method = pe_config['method']
+    if pe_flag:
+        df_fe_result = positional_encoding(df, method=pe_method)
+    else:
+        df_fe_result = df
+
+    df_fe_result = drop_date_columns(df_fe_result)
+    return df_fe_result
+
+
+
+def drop_date_columns(df):
+
+    columns_to_drop = [col for col in df.columns if 'datetime' in col.lower() or 'date' in col.lower()]
     
-    Returns:
-    - DataFrame with added columns for sinusoidal transformations.
-    """
-    df[f'{col_name}_sin'] = np.sin(2 * np.pi * df[col_name] / period)
-    df[f'{col_name}_cos'] = np.cos(2 * np.pi * df[col_name] / period)
+    df = df.drop(columns=columns_to_drop)
+    
     return df
-
-
-
-def create_sinusoidal_transformation_year_month_day(df, col_name, year, month, day, period):
-    """
-    Adds sinusoidal transformation columns (sin and cos) for year, month, day.
-    
-    Parameters:
-    - df: DataFrame to add the transformations to.
-    - year: the column stands for year..
-    - month: the column stands for month.
-    - day: the column stands for day.
-    - period: The period of the cycle (e.g., 12 for months, 7 for days of the week).
-    
-    Returns:
-    - DataFrame with added columns for sinusoidal transformations.
-    """
-    df[f'{col_name}_sin'] = np.sin(2 * np.pi * df[year] * df[month] * df[day] / period)
-    df[f'{col_name}_cos'] = np.cos(2 * np.pi * df[year] * df[month] * df[day] / period)
-    return df
-
-
-
-# create lagged features
-def create_power_lag_feature(df, target_col):
-
-    df[target_col + 'lag_1'] = df[target_col].shift(1)
-    df[target_col + 'lag_2'] = df[target_col].shift(2)
-    df[target_col + 'lag_3'] = df[target_col].shift(3)
-    
-    return
