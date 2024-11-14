@@ -40,6 +40,6 @@ def train_and_valid(df, tss, target, invalid_cols, xgb_params=xgb_params):
         preds.append(y_pred)
         score = sum(abs(y_pred - y_valid))
         valid_scores.append(score)
-    
+
     return valid_scores
 

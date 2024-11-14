@@ -53,7 +53,6 @@ df_preprocessing = preprocess(df_device, cols_for_drop)
 # feature engineering
 df_fe_result = feature_engineering(df=df_preprocessing, pe_config=pe_config)
 
-
 ## Train Using Cross Validation
 tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap)
 
