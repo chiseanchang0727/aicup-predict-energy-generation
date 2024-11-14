@@ -133,8 +133,8 @@ drop_cols = ["power", "device", "date"]
 TARGET = "power"
 n_splits = 5
 
-tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(5), gap=day_gap)
-df_train, df_test = split_train_test(df=df_fe_result_sinusoidal_time, plot=True)
+# tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(5), gap=day_gap)
+# df_train, df_test = split_train_test(df=df_fe_result_sinusoidal_time, plot=True)
 
 ## Train Using Cross Validation
 tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap)

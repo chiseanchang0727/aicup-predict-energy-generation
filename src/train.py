@@ -23,7 +23,7 @@ def generate_scores_by_xgb(df, tss, TARGET="power", drop_cols=["power", "device"
 
         reg = initialize_xgb_model(**xgb_params)
         reg.fit(
-            X_train, y_train, eval_set=[(X_train, y_train), (X_valid, y_valid)], verbose=20
+            X_train, y_train, eval_set=[(X_train, y_train), (X_valid, y_valid)], verbose=False
         )
 
         y_pred = reg.predict(X_valid)
