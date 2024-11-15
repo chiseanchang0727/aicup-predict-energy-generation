@@ -18,12 +18,12 @@ configs = read_config(os.path.join('./test_configs/', config_file))
 device_name = configs['device_name']
 cols_for_drop = configs['cols_for_drop']
 pe_config = configs['pe_config']
-
+pred_result_ouput = configs['pred_result_ouput']
 
 ######### test these later
 
 day_gap = 24 * 60
-invalid_cols_for_training = ["device"]
+invalid_cols_for_training = ["device","datetime","date"]
 target = "power"
 n_splits = 5
 
@@ -57,5 +57,10 @@ df_fe_result = feature_engineering(df=df_preprocessing, pe_config=pe_config)
 ## Train Using Cross Validation
 tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap)
 
-valid_scores = train_and_valid(df_fe_result, tss, target, invalid_cols_for_training)
+valid_scores, result_df = train_and_valid(df_fe_result, tss, target, invalid_cols_for_training)
 print(f"Total absolute error: {np.mean(valid_scores):.2f}")
+
+
+if pred_result_ouput:
+    config_name = config_file.split('/')[2].split('.')[0]
+    result_df.to_csv(f'./pred_results/Sean/{config_name}_result.csv', index=False)

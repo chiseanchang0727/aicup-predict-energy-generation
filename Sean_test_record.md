@@ -15,8 +15,7 @@
 - cross validation days: 2
 - Total absolute error: 223931.44
 
-
-3. month encoding
+3. month encoding (Sean/main) <- head
 
 - config: test_5_L10_pe.json
 - cross validation days: 2
