@@ -52,3 +52,12 @@
 - cross validation days: 2
 - Total absolute error: 213837.82
 - result_file_name = test_8_L10_sunlight_sim_result.csv
+
+8. with saturated sunlight value repalcement
+
+- remove day_of_week and quarter features
+- config: test_8_L10_sunlight_sim.json
+  - window_length:95, polyorder:2
+- cross validation days: 2
+- Total absolute error: 188562.32
+- result_file_name = test_8_L10_sunlight_sim_result.csv
