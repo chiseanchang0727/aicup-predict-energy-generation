@@ -19,20 +19,20 @@ def calculate_pressure_diff(df, column='pressure'):
     return df_copy
 
 # create time related features
-def create_time_features(df, input_column) -> pd.DataFrame:
+def create_time_features(df, input_column='datetime') -> pd.DataFrame:
     df_copy = df.copy()
     df_copy[input_column] = pd.to_datetime(df_copy[input_column])
     df_copy['date'] = df_copy[input_column].dt.date
-    df_copy['year'] = df_copy[input_column].dt.year
+    # df_copy['year'] = df_copy[input_column].dt.year
     df_copy['month'] = df_copy[input_column].dt.month
     df_copy['day'] = df_copy[input_column].dt.day
     df_copy['hour'] = df_copy[input_column].dt.hour
     df_copy['min'] = df_copy[input_column].dt.minute
 
     # Seasonal features
-    df_copy['day_of_week'] = df_copy[input_column].dt.dayofweek 
+    # df_copy['day_of_week'] = df_copy[input_column].dt.dayofweek 
     df_copy['week_of_year'] = df_copy[input_column].dt.isocalendar().week 
-    df_copy['quarter'] = df_copy[input_column].dt.quarter 
+    # df_copy['quarter'] = df_copy[input_column].dt.quarter 
     
     # df_copy['season'] = df_copy['month'].apply(lambda x: 
     #                                            'winter' if x in [12, 1, 2] else
