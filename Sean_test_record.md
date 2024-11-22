@@ -55,7 +55,7 @@
 
 8. with saturated sunlight value repalcement
 
-- remove day_of_week and quarter features
+- remove year, day_of_week and quarter features
 - config: test_8_L10_sunlight_sim.json
   - window_length:95, polyorder:2
 - cross validation days: 2

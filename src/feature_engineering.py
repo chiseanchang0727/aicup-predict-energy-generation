@@ -1,5 +1,6 @@
 import pandas as pd
-
+import numpy as np
+from scipy.signal import savgol_filter
 
 from src.fe_tools import (
     create_time_features,
@@ -51,24 +52,71 @@ def positional_encoding(df, period):
     
     return df_fe_result
 
-def feature_engineering(df, pe_config):
-    # df = calculate_pressure_diff(df, column="pressure")
-
-    pe_flag = pe_config['flag']
-    pe_period = pe_config['period']
-    if pe_flag:
-        df_fe_result = positional_encoding(df, period=pe_period)
-    else:
-        df_fe_result = df
-
-    return df_fe_result
 
 
+def replace_saturated_sunlight(df, window_lenght, polyorder, saturation_value=117758.2):
+    smoothed_data = df.copy()
+
+    smoothed_data['sunlight'] = savgol_filter(
+        smoothed_data['sunlight'].where(smoothed_data['sunlight'] < saturation_value, np.nan).fillna(saturation_value),
+        window_length=window_lenght,
+        polyorder=polyorder
+    )
+
+    df_sim_sunlight = smoothed_data[['sunlight']].rename(columns={'sunlight':'sim_sunlight'})
+    df_merge = pd.merge(df, df_sim_sunlight, how='inner', on=df.index)
+    df_merge['sunlight'] = np.where((df_merge['sunlight'] == saturation_value) & (df_merge['sim_sunlight'] > df_merge['sunlight']), 
+                                    df_merge['sim_sunlight'], df_merge['sunlight'])
+    df_merge = df_merge.drop(['sim_sunlight'], axis=1)
+    # df_merge = df_merge.set_index('key_0')
+    return df_merge
 
 def drop_date_columns(df):
 
     columns_to_drop = [col for col in df.columns if 'datetime' in col.lower() or 'date' in col.lower()]
     
     df = df.drop(columns=columns_to_drop)
+    
+    return df
+
+
+def sunlight_simulation(df, sunlight_sim_config):
+    window_length = sunlight_sim_config['window_length']
+    polyorder = sunlight_sim_config['polyorder']
+
+    df['date'] = pd.to_datetime(df['datetime']).dt.date
+
+    df_sunsim_result = pd.DataFrame()
+    for date in df['date'].unique():
+        try:
+            temp = replace_saturated_sunlight(df[df['date'] == date], window_lenght=window_length, polyorder=polyorder)
+        
+        except:
+            continue
+
+        df_sunsim_result = pd.concat([df_sunsim_result, temp], axis=0)
+        
+    df_sunsim_result = df_sunsim_result.drop(['key_0'], axis=1)
+    
+    return df_sunsim_result
+
+
+def feature_engineering(df, fe_config):
+    
+    pe_config = fe_config['pe_config']
+    
+    pe_flag = pe_config['flag']
+    pe_period = pe_config['period']
+
+    if pe_flag:
+        df = positional_encoding(df, period=pe_period).copy()
+    else:
+        df = df.copy()
+
+
+    sunlight_sim_config = fe_config['sunlight_sim_config']
+    if sunlight_sim_config['flag']:
+        
+        df = sunlight_simulation(df, sunlight_sim_config)
     
     return df
