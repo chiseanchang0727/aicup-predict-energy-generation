@@ -80,10 +80,31 @@ def drop_date_columns(df):
     return df
 
 
-def feature_engineering(df, fe_config):
-    # df = calculate_pressure_diff(df, column="pressure")
+def sunlight_simulation(df, sunlight_sim_config):
+    window_length = sunlight_sim_config['window_length']
+    polyorder = sunlight_sim_config['polyorder']
 
+    df['date'] = pd.to_datetime(df['datetime']).dt.date
+
+    df_sunsim_result = pd.DataFrame()
+    for date in df['date'].unique():
+        try:
+            temp = replace_saturated_sunlight(df[df['date'] == date], window_lenght=window_length, polyorder=polyorder)
+        
+        except:
+            continue
+
+        df_sunsim_result = pd.concat([df_sunsim_result, temp], axis=0)
+        
+    df_sunsim_result = df_sunsim_result.drop(['key_0'], axis=1)
+    
+    return df_sunsim_result
+
+
+def feature_engineering(df, fe_config):
+    
     pe_config = fe_config['pe_config']
+    
     pe_flag = pe_config['flag']
     pe_period = pe_config['period']
 
@@ -95,21 +116,7 @@ def feature_engineering(df, fe_config):
 
     sunlight_sim_config = fe_config['sunlight_sim_config']
     if sunlight_sim_config['flag']:
-        window_length = sunlight_sim_config['window_length']
-        polyorder = sunlight_sim_config['polyorder']
-
-        df['date'] = pd.to_datetime(df['datetime']).dt.date
-
-        df_sunsim_result = pd.DataFrame()
-        for date in df['date'].unique():
-            try:
-                temp = replace_saturated_sunlight(df[df['date'] == date], window_lenght=window_length, polyorder=polyorder)
-            
-            except:
-                continue
-
-            df_sunsim_result = pd.concat([df_sunsim_result, temp], axis=0)
-    else:
-        df_fe_result = df
-
-    return df_fe_result
+        
+        df = sunlight_simulation(df, sunlight_sim_config)
+    
+    return df

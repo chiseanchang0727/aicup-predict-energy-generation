@@ -12,7 +12,7 @@ from src.standardization import standardization
 
 ######################################################################
 
-config_file = './Sean/test_8_L10_sunlight_sim.json'
+config_file = './Sean/test_9_L10_refactor.json'
 configs = read_config(os.path.join('./test_configs/', config_file))
 
 test_name = config_file.split('/')[2].split('.')[0]
@@ -23,6 +23,7 @@ print("configs: ", configs)
 device_name = configs['device_name']
 cols_for_drop = configs['cols_for_drop']
 
+# preprocess_config = configs['preprocess_config]
 fe_config = configs['fe_config']
 
 pred_result_ouput = configs['pred_result_ouput']
