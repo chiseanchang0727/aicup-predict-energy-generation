@@ -19,7 +19,7 @@ def calculate_pressure_diff(df, column='pressure'):
     return df_copy
 
 # create time related features
-def create_time_features(df, input_column) -> pd.DataFrame:
+def create_time_features(df, input_column='datetime') -> pd.DataFrame:
     df_copy = df.copy()
     df_copy[input_column] = pd.to_datetime(df_copy[input_column])
     df_copy['date'] = df_copy[input_column].dt.date

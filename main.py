@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
-
+from datetime import datetime
 from sklearn.model_selection import TimeSeriesSplit
 
 from src.utils import read_config, choose_device
@@ -12,11 +12,17 @@ from src.feature_engineering import feature_engineering
 
 ######################################################################
 
-config_file = './Sean/test_5_L10_pe.json'
+config_file = './Sean/test_8_L10_sunlight_sim.json'
 configs = read_config(os.path.join('./test_configs/', config_file))
+
+test_name = config_file.split('/')[2].split('.')[0]
+print(f"{test_name} starts.")
+print("configs: ", configs)
+# test_name = 'test_6_L10_sunlight_sim'
 
 device_name = configs['device_name']
 cols_for_drop = configs['cols_for_drop']
+preprocess_config = configs['preprocess_config']
 pe_config = configs['pe_config']
 pred_result_ouput = configs['pred_result_ouput']
 
@@ -48,7 +54,7 @@ df_raw_data = read_raw_data_and_sort(raw_data_path, sort_by_cols=["device", "dat
 df_device = choose_device(df_raw_data, device_name)
 
 # preprocssing
-df_preprocessing = preprocess(df_device, cols_for_drop)
+df_preprocessing = preprocess(df_device, cols_for_drop, preprocess_config)
 
 # feature engineering
 df_fe_result = feature_engineering(df=df_preprocessing, pe_config=pe_config)
@@ -62,5 +68,21 @@ print(f"Total absolute error: {np.mean(valid_scores):.2f}")
 
 
 if pred_result_ouput:
-    config_name = config_file.split('/')[2].split('.')[0]
-    result_df.to_csv(f'./pred_results/Sean/{config_name}_result.csv', index=False)
+
+    output_dir = './pred_results/Sean'  # Output directory
+    output_file = f"{output_dir}/{test_name}_result.csv"  # Output file path
+    
+    # Check if the file already exists
+    if os.path.exists(output_file):
+        user_input = input(f"The file '{output_file}' already exists. Do you want to replace it? (y/n): ").strip().lower()
+        if user_input != 'y':
+            print("Exiting without replacing the file.")
+            exit(0)  # Stop the script
+        else:
+            print(f"Replacing the file '{output_file}'...")
+    else:
+        print(f"The file '{output_file}' does not exist. Proceeding to save results.")
+
+    current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    result_df['pred_time'] = current_date
+    result_df.to_csv(output_file, index=False)
