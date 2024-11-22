@@ -33,35 +33,36 @@ def col_remove(df, cols_for_drop):
 
     return df_result
 
-def preprocess(df, cols_for_drop, preprocess_config):
+def preprocess(df, cols_for_drop, preprocess_config=None):
 
-    sunlight_sim_config = preprocess_config['sunlight_sim_config']
-    if sunlight_sim_config['flag']:
-        window_length = sunlight_sim_config['window_length']
-        polyorder = sunlight_sim_config['polyorder']
+    # sunlight_sim_config = preprocess_config['sunlight_sim_config']
+    # if sunlight_sim_config['flag']:
+    #     window_length = sunlight_sim_config['window_length']
+    #     polyorder = sunlight_sim_config['polyorder']
 
-        df['date'] = pd.to_datetime(df['datetime']).dt.date
+    #     df['date'] = pd.to_datetime(df['datetime']).dt.date
 
-        df_sunsim_result = pd.DataFrame()
-        for date in df['date'].unique():
-            try:
-                temp = replace_saturated_sunlight(df[df['date'] == date], window_lenght=window_length, polyorder=polyorder)
+    #     df_sunsim_result = pd.DataFrame()
+    #     for date in df['date'].unique():
+    #         try:
+    #             temp = replace_saturated_sunlight(df[df['date'] == date], window_lenght=window_length, polyorder=polyorder)
             
-            except:
-                continue
+    #         except:
+    #             continue
 
-            df_sunsim_result = pd.concat([df_sunsim_result, temp], axis=0)
+    #         df_sunsim_result = pd.concat([df_sunsim_result, temp], axis=0)
 
-    df_sunsim_result = df_sunsim_result.drop(['date','key_0'], axis=1)
-    initial_cols = select_initial_columns(cols_for_drop)
+    # df_sunsim_result = df_sunsim_result.drop(['date','key_0'], axis=1)
+    # initial_cols = select_initial_columns(cols_for_drop)
 
-    df_2 = col_remove(df_sunsim_result, cols_for_drop)
+    df_2 = col_remove(df, cols_for_drop).copy()
 
-    scaler = StandardScaler()
-    df_standardized = df_2.copy()
-    df_standardized[initial_cols] = scaler.fit_transform(
-        df_standardized[initial_cols]
-    )
-    return df_standardized
+    # scaler = StandardScaler()
+    # df_standardized = df_2.copy()
+    # df_standardized[initial_cols] = scaler.fit_transform(
+    #     df_standardized[initial_cols]
+    # )
+    
+    return df_2
 
 

@@ -8,7 +8,7 @@ from src.utils import read_config, choose_device
 from src.train import train_and_valid
 from src.preprocess import preprocess
 from src.feature_engineering import feature_engineering
-
+from src.standardization import standardization
 
 ######################################################################
 
@@ -22,8 +22,9 @@ print("configs: ", configs)
 
 device_name = configs['device_name']
 cols_for_drop = configs['cols_for_drop']
-preprocess_config = configs['preprocess_config']
-pe_config = configs['pe_config']
+
+fe_config = configs['fe_config']
+
 pred_result_ouput = configs['pred_result_ouput']
 
 ######### test these later
@@ -54,11 +55,13 @@ df_raw_data = read_raw_data_and_sort(raw_data_path, sort_by_cols=["device", "dat
 df_device = choose_device(df_raw_data, device_name)
 
 # preprocssing
-df_preprocessing = preprocess(df_device, cols_for_drop, preprocess_config)
+df_preprocessing = preprocess(df_device, cols_for_drop, preprocess_config=None)
 
 # feature engineering
-df_fe_result = feature_engineering(df=df_preprocessing, pe_config=pe_config)
+df_fe_result = feature_engineering(df=df_preprocessing, fe_config=fe_config)
 
+# standardization
+df_standardization = standardization(df_fe_result)
 
 ## Train Using Cross Validation
 tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap)
