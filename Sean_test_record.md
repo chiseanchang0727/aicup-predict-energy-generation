@@ -114,3 +114,17 @@
 - n_split = 8 
 - Total absolute error: 394.51
 - result_file_name = test_10_L10_grouping_1_result.csv
+
+14. fix the window grouping bug (w/ rolling)
+
+- window grouping: sunlight and temperature
+
+- remove year, day_of_week and quarter features
+- config: test_10_L10_grouping_1.json
+  - window_length:95, polyorder:2
+  - window_grouping: 7
+  - rolling_grouping: 20
+- cross validation days: 8
+- n_split = 8 
+- Total absolute error: 399.92
+- result_file_name = test_11_L10_rolling.csv

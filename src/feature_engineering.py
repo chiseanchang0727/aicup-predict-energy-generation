@@ -101,11 +101,11 @@ def sunlight_simulation(df, sunlight_sim_config):
     return df_sunsim_result
 
 
-def add_window_mean(df, col, group):
+def add_window_mean(df: pd.DataFrame, col, group):
      
-    df['group'] = df.index // group
+    df['group'] = df.groupby('date').cumcount() // group
 
-    df[f'avg_{col}'] = df.groupby(['group'])[col].transform('mean')
+    df[f'avg_{col}'] = df.groupby(['date', 'group'])[col].transform('mean')
     
     df[f'residual_{col}'] = df[col] - df[f'avg_{col}']
 
@@ -113,10 +113,17 @@ def add_window_mean(df, col, group):
     
     return df
 
-def add_rolling_mean(df, col, group):
+def add_rolling_mean(df: pd.DataFrame, col, group):
     
-    df[f'rolling_{col}'] = df[col].rolling(window=group).mean().fillna(df[col])
-    # df[f'residual_rolling_{col}'] = df[col] - df[f'rolling_{col}']
+    df[f'rolling_{col}'] = (
+        df
+        .groupby('date')[col]
+        .transform(lambda x: x.rolling(window=group).mean())
+        .fillna(df[col])
+    )
+    
+    
+    df[f'residual_rolling_{col}'] = df[col] - df[f'rolling_{col}']
     
     return df
 
@@ -143,7 +150,8 @@ def feature_engineering(df, fe_config):
     if grouping_window_config['flag']:
         grouping_window = grouping_window_config['grouping_window']
         df = add_window_mean(df, col='sunlight', group=grouping_window)
-        df = add_window_mean(df, col='humidity', group=grouping_window)
+        # df = add_window_mean(df, col='humidity', group=grouping_window)
+        df = add_window_mean(df, col='temperature', group=grouping_window)
         
     rolling_window_config = fe_config['rolling_window_config']
     if rolling_window_config['flag']:
