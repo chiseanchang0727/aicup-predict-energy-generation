@@ -12,7 +12,7 @@ from src.standardization import standardization
 
 ######################################################################
 
-config_file = './Sean/test_9_L10_refactor.json'
+config_file = './Sean/test_10_L10_grouping_1.json'
 configs = read_config(os.path.join('./test_configs/', config_file))
 
 test_name = config_file.split('/')[2].split('.')[0]
@@ -63,11 +63,11 @@ df_fe_result = feature_engineering(df=df_preprocessing, fe_config=fe_config)
 
 # standardization
 df_standardization = standardization(df_fe_result)
-
+df_standardization = df_standardization.drop(['sunlight'], axis=1)
 ## Train Using Cross Validation
 tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap)
 
-valid_scores, result_df = train_and_valid(df_fe_result, tss, target, invalid_cols_for_training)
+valid_scores, result_df = train_and_valid(df_standardization, tss, target, invalid_cols_for_training)
 print(f"Total absolute error: {np.mean(valid_scores):.2f}")
 
 

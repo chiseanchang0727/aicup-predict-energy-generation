@@ -101,6 +101,19 @@ def sunlight_simulation(df, sunlight_sim_config):
     return df_sunsim_result
 
 
+def add_average_sunlight(df, group):
+     
+    df['group'] = df.index // group
+
+    df['avg_sunlight'] = df.groupby(['group'])['sunlight'].transform('mean')
+    
+    df['residual_sunlight'] = df['sunlight'] - df['avg_sunlight']
+
+    df = df.drop(columns='group', axis=1)
+    
+    return df
+
+
 def feature_engineering(df, fe_config):
     
     pe_config = fe_config['pe_config']
@@ -118,5 +131,11 @@ def feature_engineering(df, fe_config):
     if sunlight_sim_config['flag']:
         
         df = sunlight_simulation(df, sunlight_sim_config)
+    
+    grouping_config = fe_config['grouping_config']
+    if grouping_config['flag']:
+        
+        grouping_num = grouping_config['grouping_num']
+        df = add_average_sunlight(df, group=grouping_num)
     
     return df

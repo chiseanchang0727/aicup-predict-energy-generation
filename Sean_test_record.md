@@ -61,3 +61,23 @@
 - cross validation days: 2
 - Total absolute error: 188562.32
 - result_file_name = test_8_L10_sunlight_sim_result.csv
+
+9. add average sunlight in certain time window (without standardization)
+
+- remove year, day_of_week and quarter features
+- config: test_10_L10_grouping_1.json
+  - window_length:95, polyorder:2
+  - grouping: 7
+- cross validation days: 2
+- Total absolute error: 179091.56
+- result_file_name = test_10_L10_grouping_1_result.csv
+
+10. add average sunlight in certain time window (WITH standardization)
+
+- remove year, day_of_week and quarter features
+- config: test_10_L10_grouping_1.json
+  - window_length:95, polyorder:2
+  - grouping: 7
+- cross validation days: 2
+- Total absolute error: 473.77
+- result_file_name = test_10_L10_grouping_1_result.csv
