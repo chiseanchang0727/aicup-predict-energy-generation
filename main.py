@@ -63,7 +63,7 @@ df_fe_result = feature_engineering(df=df_preprocessing, fe_config=fe_config)
 
 # standardization
 df_standardization = standardization(df_fe_result)
-
+df_standardization = df_standardization.drop(['sunlight'], axis=1)
 ## Train Using Cross Validation
 tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap)
 
