@@ -9,11 +9,11 @@
     },
     "grouping_window_config": {
       "flag": true,
-      "grouping_window": 7
+      "grouping_window": 10
     },
     "rolling_window_config": {
       "flag": true,
-      "rolling_window": 20
+      "rolling_window": 45
     }
     ,
     "pe_config": {

@@ -122,9 +122,9 @@
 - remove year, day_of_week and quarter features
 - config: test_10_L10_grouping_1.json
   - window_length:95, polyorder:2
-  - window_grouping: 7
-  - rolling_grouping: 20
+  - window_grouping: 10
+  - rolling_grouping: 45
 - cross validation days: 8
 - n_split = 8 
-- Total absolute error: 399.92
+- Total absolute error: 384.46
 - result_file_name = test_11_L10_rolling.csv
