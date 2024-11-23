@@ -102,3 +102,15 @@
 - n_split = 8 
 - Total absolute error: 425.13
 - result_file_name = test_10_L10_grouping_1_result.csv
+
+13. add rolling average of sunlight
+
+- remove year, day_of_week and quarter features
+- config: test_10_L10_grouping_1.json
+  - window_length:95, polyorder:2
+  - window_grouping: 7
+  - rolling_grouping: 7
+- cross validation days: 8
+- n_split = 8 
+- Total absolute error: 409.60
+- result_file_name = test_10_L10_grouping_1_result.csv

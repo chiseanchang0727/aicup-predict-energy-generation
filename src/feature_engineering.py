@@ -116,7 +116,7 @@ def add_window_mean(df, col, group):
 def add_rolling_mean(df, col, group):
     
     df[f'rolling_{col}'] = df[col].rolling(window=group).mean().fillna(df[col])
-    df[f'residual_rolling_{col}'] = df[col] - df[f'rolling_{col}']
+    # df[f'residual_rolling_{col}'] = df[col] - df[f'rolling_{col}']
     
     return df
 
