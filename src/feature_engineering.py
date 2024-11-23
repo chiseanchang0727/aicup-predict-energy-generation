@@ -101,13 +101,13 @@ def sunlight_simulation(df, sunlight_sim_config):
     return df_sunsim_result
 
 
-def add_average_sunlight(df, group):
+def add_average_sunlight(df, col, group):
      
     df['group'] = df.index // group
 
-    df['avg_sunlight'] = df.groupby(['group'])['sunlight'].transform('mean')
+    df[f'avg_{col}'] = df.groupby(['group'])[col].transform('mean')
     
-    df['residual_sunlight'] = df['sunlight'] - df['avg_sunlight']
+    df[f'residual_{col}'] = df[col] - df[f'avg_{col}']
 
     df = df.drop(columns='group', axis=1)
     
@@ -136,6 +136,8 @@ def feature_engineering(df, fe_config):
     if grouping_config['flag']:
         
         grouping_num = grouping_config['grouping_num']
-        df = add_average_sunlight(df, group=grouping_num)
-    
+        df = add_average_sunlight(df, col='sunlight', group=grouping_num)
+        df = add_average_sunlight(df, col='humidity', group=grouping_num)
+        df = add_average_sunlight(df, col='temperature', group=grouping_num)
+
     return df
