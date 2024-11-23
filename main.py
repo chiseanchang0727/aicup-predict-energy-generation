@@ -67,7 +67,7 @@ df_standardization = standardization(df_fe_result)
 ## Train Using Cross Validation
 tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap)
 
-valid_scores, result_df = train_and_valid(df_fe_result, tss, target, invalid_cols_for_training)
+valid_scores, result_df = train_and_valid(df_standardization, tss, target, invalid_cols_for_training)
 print(f"Total absolute error: {np.mean(valid_scores):.2f}")
 
 
