@@ -7,9 +7,13 @@
       "window_length": 95,
       "polyorder": 2
     },
-    "grouping_config": {
+    "grouping_window_config": {
       "flag": true,
-      "grouping_num": 7
+      "grouping_window": 7
+    },
+    "rolling_window_config": {
+      "flag": true,
+      "rolling_window": 7
     }
     ,
     "pe_config": {
@@ -18,5 +22,5 @@
     }
   },
   "pred_result_ouput": true,
-  "cv_fold": 8
+  "n_splits": 8
 }
