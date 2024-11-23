@@ -13,7 +13,7 @@
     },
     "rolling_window_config": {
       "flag": true,
-      "rolling_window": 7
+      "rolling_window": 20
     }
     ,
     "pe_config": {
