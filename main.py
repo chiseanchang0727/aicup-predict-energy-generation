@@ -28,7 +28,7 @@ fe_config = configs['fe_config']
 
 pred_result_ouput = configs['pred_result_ouput']
 
-n_splits = configs['cv_split']
+n_splits = configs['n_splits']
 
 ######### test these later
 

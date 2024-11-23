@@ -18,5 +18,5 @@
     }
   },
   "pred_result_ouput": true,
-  "cv_split": 8
+  "cv_fold": 8
 }
