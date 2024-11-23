@@ -92,7 +92,7 @@
 - Total absolute error: 470.14
 - result_file_name = test_10_L10_grouping_1_result.csv
 
-12. change n_split(train, test portion) to 8
+12. change n_split(train, test ratio) to 8
 
 - remove year, day_of_week and quarter features
 - config: test_10_L10_grouping_1.json
