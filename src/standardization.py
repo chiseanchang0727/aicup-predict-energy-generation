@@ -9,9 +9,6 @@ def select_initial_columns(cols_for_drop):
 
 
 
-
-
-
 def standardization(df):
 
     scaler = StandardScaler()

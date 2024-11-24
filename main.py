@@ -12,7 +12,7 @@ from src.standardization import standardization
 
 ######################################################################
 
-config_file = './Sean/test_10_L10_grouping_1.json'
+config_file = './Sean/test_11_L10_rolling.json'
 configs = read_config(os.path.join('./test_configs/', config_file))
 
 test_name = config_file.split('/')[2].split('.')[0]
@@ -28,15 +28,16 @@ fe_config = configs['fe_config']
 
 pred_result_ouput = configs['pred_result_ouput']
 
+n_splits = configs['n_splits']
+
 ######### test these later
 
 day_gap = 24 * 60
-invalid_cols_for_training = ["device","datetime","date"]
-target = "power"
-n_splits = 5
+invalid_cols_for_training = ["device", "datetime", "date"]
 
 ######################################################################
 
+target = "power"
 raw_data_path = "data/processed_data/combined_data.csv"
 
 def read_raw_data_and_sort(raw_data_path: str, sort_by_cols: list = ["device", "datetime"]) -> pd.DataFrame:
@@ -63,7 +64,7 @@ df_fe_result = feature_engineering(df=df_preprocessing, fe_config=fe_config)
 
 # standardization
 df_standardization = standardization(df_fe_result)
-df_standardization = df_standardization.drop(['sunlight'], axis=1)
+
 ## Train Using Cross Validation
 tss = TimeSeriesSplit(n_splits=n_splits, test_size=get_test_size(2), gap=day_gap)
 

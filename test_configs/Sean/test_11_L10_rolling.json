@@ -1,0 +1,26 @@
+{
+  "device_name": "L10",
+  "cols_for_drop": ["windspeed", "pressure"],
+  "fe_config": {
+    "sunlight_sim_config": {
+      "flag": true,
+      "window_length": 95,
+      "polyorder": 2
+    },
+    "grouping_window_config": {
+      "flag": true,
+      "grouping_window": 10
+    },
+    "rolling_window_config": {
+      "flag": true,
+      "rolling_window": 45
+    }
+    ,
+    "pe_config": {
+      "flag": true,
+      "period": "month"
+    }
+  },
+  "pred_result_ouput": true,
+  "n_splits": 8
+}
