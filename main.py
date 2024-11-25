@@ -12,7 +12,7 @@ from src.standardization import standardization
 
 ######################################################################
 
-config_file = './Sean/test_11_L10_rolling.json'
+config_file = './Sean/test_12_L10_lag_fe.json'
 configs = read_config(os.path.join('./test_configs/', config_file))
 
 test_name = config_file.split('/')[2].split('.')[0]

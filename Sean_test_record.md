@@ -99,7 +99,7 @@
   - window_length:95, polyorder:2
   - grouping: 7
 - cross validation days: 8
-- n_split = 8 
+- n_split = 8
 - Total absolute error: 425.13
 - result_file_name = test_10_L10_grouping_1_result.csv
 
@@ -111,7 +111,7 @@
   - window_grouping: 7
   - rolling_grouping: 20
 - cross validation days: 8
-- n_split = 8 
+- n_split = 8
 - Total absolute error: 394.51
 - result_file_name = test_10_L10_grouping_1_result.csv
 
@@ -125,6 +125,24 @@
   - window_grouping: 10
   - rolling_grouping: 45
 - cross validation days: 8
-- n_split = 8 
+- n_split = 8
 - Total absolute error: 384.46
+- result_file_name = test_11_L10_rolling.csv
+
+15. lag feature: sunlight, temperature
+
+- window grouping: sunlight and temperature
+
+- remove year, day_of_week and quarter features
+- config: test_12_L10_lag_fe.json
+  - window_length:95, polyorder:2
+  - window_grouping: 10
+  - rolling_grouping: 45
+- lag_feature: sunlight, step=1,
+- feature interaction:
+  - ["lag_sunlight_1", "min"],
+  - ["lag_sunlight_1", "humidity"]
+- cross validation days: 8
+- n_split = 8
+- Total absolute error: 374.37
 - result_file_name = test_11_L10_rolling.csv
