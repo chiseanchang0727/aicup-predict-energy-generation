@@ -8,8 +8,6 @@ from src.fe_tools import (
     create_pe
 )
 
-
-
 def create_sinusoidal_date_base(period):
 
     # create sinusodial month mapping
@@ -122,11 +120,22 @@ def add_rolling_mean(df: pd.DataFrame, col, group):
         .fillna(df[col])
     )
     
-    
     df[f'residual_rolling_{col}'] = df[col] - df[f'rolling_{col}']
     
     return df
 
+def create_lag_feature(df: pd.DataFrame, col, group_col, lag_step):
+    if df.columns.__contains__(col):
+        df[f'lag_{col}_{lag_step}'] = df.groupby([group_col])[col].shift(lag_step).fillna(df[col])
+        return df
+    else:
+        raise ValueError(f"{col} doesn't exsit.")
+
+def feature_interaction(df, col1, col2):
+
+    df[f'multi_{col1}_{col2}'] = df[col1] * df[col2]
+
+    return df
 
 def feature_engineering(df, fe_config):
     
@@ -145,18 +154,33 @@ def feature_engineering(df, fe_config):
     if sunlight_sim_config['flag']:
         
         df = sunlight_simulation(df, sunlight_sim_config)
+
+    lag_fe_config = fe_config['lag_fe_config']
+    if lag_fe_config['flag']:  
+        cols = lag_fe_config['cols']
+        group_col = lag_fe_config['group_col']
+        lag_steps = lag_fe_config['lag_steps']
+
+        for col in cols:
+            for step in lag_steps:
+                df = create_lag_feature(df, col, group_col, lag_step=step)
     
     grouping_window_config = fe_config['grouping_window_config']
     if grouping_window_config['flag']:
-        grouping_window = grouping_window_config['grouping_window']
-        df = add_window_mean(df, col='sunlight', group=grouping_window)
-        # df = add_window_mean(df, col='humidity', group=grouping_window)
-        df = add_window_mean(df, col='temperature', group=grouping_window)
+        for _, groups in grouping_window_config["groupings"].items():
+            # grouping_window = groups['sunlight']
+            df = add_window_mean(df, col=groups[0], group=groups[1])
         
     rolling_window_config = fe_config['rolling_window_config']
     if rolling_window_config['flag']:
         rolling_window = rolling_window_config['rolling_window']
         df = add_rolling_mean(df, col='sunlight', group=rolling_window)
         # df = add_rolling_mean(df, col='humidity', group=rolling_window)
+
+    fe_interaction_config = fe_config['fe_interaction_config']
+    if fe_interaction_config['flag']:
+        pairings= fe_interaction_config['pairings']
+        for _, pair in pairings.items():
+            df = feature_interaction(df, pair[0], pair[1])
 
     return df

@@ -1,0 +1,43 @@
+{
+  "device_name": "L10",
+  "cols_for_drop": ["windspeed", "pressure"],
+  "fe_config": {
+    "sunlight_sim_config": {
+      "flag": true,
+      "window_length": 95,
+      "polyorder": 2
+    },
+    "grouping_window_config": {
+      "flag": true,
+      "groupings": {
+        "1": ["sunlight", 10],
+        "2": ["temperature", 10]
+      }
+    },
+    "rolling_window_config": {
+      "flag": true,
+      "rolling_window": 45
+    },
+    "pe_config": {
+      "flag": true,
+      "period": "month"
+    },
+    "lag_fe_config": {
+      "flag": true,
+      "cols": ["sunlight", "humidity"],
+      "group_col": "date",
+      "lag_steps": [1]
+    },
+    "fe_interaction_config": {
+      "flag": true,
+      "pairings": {
+        "1": ["lag_sunlight_1", "min"],
+        "2": ["lag_sunlight_1", "humidity"],
+        "3": ["residual_sunlight", "hour"]
+      }
+    }
+  },
+  "pred_result_ouput": true,
+  "n_splits": 8,
+  "invalid_cols_for_training": ["device", "datetime", "date"]
+}
