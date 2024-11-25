@@ -171,11 +171,6 @@ def feature_engineering(df, fe_config):
             # grouping_window = groups['sunlight']
             df = add_window_mean(df, col=groups[0], group=groups[1])
         
-            # temperature_grouping_window = grouping_window_config['temperature']
-            # df = add_window_mean(df, col='temperature', group=temperature_grouping_window)
-                
-            # df = add_window_mean(df, col='humidity', group=grouping_window)
-
     rolling_window_config = fe_config['rolling_window_config']
     if rolling_window_config['flag']:
         rolling_window = rolling_window_config['rolling_window']

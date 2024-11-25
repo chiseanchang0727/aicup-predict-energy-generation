@@ -38,5 +38,6 @@
     }
   },
   "pred_result_ouput": true,
-  "n_splits": 8
+  "n_splits": 8,
+  "invalid_cols_for_training": ["device", "datetime", "date"]
 }

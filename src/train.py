@@ -1,5 +1,6 @@
 import xgboost as xgb
 import pandas as pd
+import numpy as np
 
 xgb_params = {
     "base_score": 0.1,
@@ -43,7 +44,6 @@ def train_and_valid(df, tss, target, invalid_cols, xgb_params=xgb_params):
         )
 
         y_pred = reg.predict(X_valid)
-
 
         # Store y_pred, y_valid, and datetime index for each fold in a temporary DataFrame
         df_pred_valid = pd.DataFrame({
