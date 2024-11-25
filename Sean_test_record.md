@@ -142,7 +142,8 @@
 - feature interaction:
   - ["lag_sunlight_1", "min"],
   - ["lag_sunlight_1", "humidity"]
+  - ['residual_sunlight', 'hour']
 - cross validation days: 8
 - n_split = 8
-- Total absolute error: 374.37
+- Total absolute error: 349.20
 - result_file_name = test_11_L10_rolling.csv

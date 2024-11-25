@@ -33,7 +33,7 @@
       "pairings": {
         "1": ["lag_sunlight_1", "min"],
         "2": ["lag_sunlight_1", "humidity"],
-        "3": ["lag_humidity_1", "hour"]
+        "3": ["residual_sunlight", "hour"]
       }
     }
   },
