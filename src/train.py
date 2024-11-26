@@ -26,7 +26,7 @@ def get_model(device, input_size,  output_size, hidden_size,  num_layers, dropou
     
     model = LSTMmodel(input_size,  output_size, hidden_size, num_layers, dropout, device)
     
-    return model
+    return model.to(device)
 
 
 
@@ -99,7 +99,7 @@ def train_and_valid(df, tss, target, invalid_cols, hyperparams):
     result_df = pd.DataFrame()
     valid_scores = []
     fold = 0
-    batch_size = 2048
+    batch_size = 1024
     for train_idx, val_idx in tss.split(df):
         df_train, df_valid = df.iloc[train_idx], df.iloc[val_idx]
 
@@ -118,7 +118,7 @@ def train_and_valid(df, tss, target, invalid_cols, hyperparams):
 
         # Convert data to PyTorch tensors
         train_loader = create_loader(X_train, y_train, batch_size)
-        valid_loader = create_loader(X_valid, y_valid, batch_size)
+
 
         # Initial model
         input_size = X_train.shape[1]
@@ -147,33 +147,29 @@ def train_and_valid(df, tss, target, invalid_cols, hyperparams):
                 # total_loss += loss.item() 
 
                 if i % 10 == 0:
-                    print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
-                        .format(epoch+1, epochs, i+1, total_step, loss.item()))
-
-        print(1)
+                    print(f'Fold {fold}, Epoch [{epoch+1}/{epochs}], Step [{i+1}/{total_step}], Loss: {loss.item():.4f}')
 
         model.eval()
-
-        y_pred = model(X_valid.to(device))
-        # # load the model
-        # model.load_state_dict(best_model)
-
+        with torch.no_grad():
+            y_pred = model(X_valid.to(device))
+            
         # # Store y_pred, y_valid, and datetime index for each fold in a temporary DataFrame
-        # df_pred_valid = pd.DataFrame({
-        #     'fold': fold,
-        #     'datetime': df_valid.datetime,  # Add datetime index
-        #     'y_valid': y_valid,
-        #     'y_pred': y_pred
-        # })
+            df_pred_valid = pd.DataFrame({
+                'fold': fold,
+                'datetime': df_valid.datetime,  # Add datetime index
+                'y_valid': y_valid.cpu().numpy().squeeze(),
+                'y_pred': y_pred.cpu().numpy().squeeze()
+            })
 
-        # df_pred_valid['datetime'] = pd.to_datetime(df_pred_valid['datetime'])
-        # df_pred_valid['tae'] = abs(df_pred_valid['y_valid'] - df_pred_valid['y_pred'])
+            df_pred_valid['datetime'] = pd.to_datetime(df_pred_valid['datetime'])
+            df_pred_valid['tae'] = abs(df_pred_valid['y_valid'] - df_pred_valid['y_pred'])
 
-        # scores = df_pred_valid['tae'].sum()
-        # valid_scores.append(scores)
+            scores = df_pred_valid['tae'].sum()
+            valid_scores.append(scores)
 
-        # result_df = pd.concat([result_df, df_pred_valid], ignore_index=True)
-        # fold += 1
+            result_df = pd.concat([result_df, df_pred_valid], ignore_index=True)
+            
+        fold += 1
 
     return valid_scores, result_df
 

@@ -1,6 +1,6 @@
 
 import numpy as np
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 def select_initial_columns(cols_for_drop):
     base_columns = ['windspeed', 'pressure', 'temperature', 'humidity', 'sunlight']
@@ -25,7 +25,7 @@ def standardization(df, log_trans_cols=None):
     #             else:
     #                 df_transformed[col] = np.log(df_transformed[col])
 
-    scaler = StandardScaler()
+    scaler = MinMaxScaler()
     df_standardized = df.copy()
 
     # Select numerical columns only
