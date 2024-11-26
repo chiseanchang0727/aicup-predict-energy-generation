@@ -3,13 +3,14 @@ import pandas as pd
 import numpy as np
 
 xgb_params = {
-    "base_score": 0.1,
     "booster": "gbtree",
+    "base_score": 0.07,
     "n_estimators": 1000,
-    "early_stopping_rounds": 100,
-    "max_depth": 10,
-    "learning_rate": 1e-2,
+    "early_stopping_rounds": 50,
+    "max_depth": 8,
+    "learning_rate": 3e-2
 }
+
 
 def drop_invalid_columns(df, invalid_cols):
 
