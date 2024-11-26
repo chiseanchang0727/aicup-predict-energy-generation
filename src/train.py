@@ -152,6 +152,9 @@ def train_and_valid(df, tss, target, invalid_cols, hyperparams):
 
         print(1)
 
+        model.eval()
+
+        y_pred = model(X_valid.to(device))
         # # load the model
         # model.load_state_dict(best_model)
 
