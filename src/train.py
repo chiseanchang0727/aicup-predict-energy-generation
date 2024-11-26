@@ -22,9 +22,9 @@ lstm_params = {
     
 }
 
-def get_model(input_size,  output_size, hidden_size,  num_layers, dropout):
+def get_model(device, input_size,  output_size, hidden_size,  num_layers, dropout):
     
-    model = LSTMmodel(input_size,  output_size, hidden_size, num_layers, dropout)
+    model = LSTMmodel(input_size,  output_size, hidden_size, num_layers, dropout, device)
     
     return model
 
@@ -123,7 +123,7 @@ def train_and_valid(df, tss, target, invalid_cols, hyperparams):
         # Initial model
         input_size = X_train.shape[1]
         output_size = y_train.shape[1]
-        model = get_model(input_size, output_size, **hyperparams)
+        model = get_model(device, input_size, output_size, **hyperparams)
         criterion = nn.MSELoss()
         optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
         epochs = 10
