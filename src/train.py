@@ -125,8 +125,8 @@ def train_and_valid(df, tss, target, invalid_cols, hyperparams):
         output_size = y_train.shape[1]
         model = get_model(device, input_size, output_size, **hyperparams)
         criterion = nn.MSELoss()
-        optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-        epochs = 10
+        optimizer = torch.optim.Adam(model.parameters(), lr=1e-2)
+        epochs = 150
 
         total_step = len(train_loader)
         for epoch in range(epochs):
@@ -146,7 +146,7 @@ def train_and_valid(df, tss, target, invalid_cols, hyperparams):
                 optimizer.step()
                 # total_loss += loss.item() 
 
-                if i % 100 == 0:
+                if i % 10 == 0:
                     print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
                         .format(epoch+1, epochs, i+1, total_step, loss.item()))
 
